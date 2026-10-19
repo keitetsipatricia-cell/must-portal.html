@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in | MUST Applications</title>
+  <style>
+:root {
+  --teal: #0b3c49;
+  --teal-2: #14566a;
+  --amber: #f2a900;
+  --ink: #1f2a37;
+  --muted: #5b6776;
+  --line: #cfd8de;
+  --bg: #eef2f5;
+  --white: #fff;
+  --danger: #b3261e;
+  --ok: #1b7a4b;
+  --serif: Georgia, "Times New Roman", serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; }
+body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.5; }
+
+.shell { min-height: 100vh; display: grid; grid-template-columns: minmax(280px, 5fr) 7fr; }
+
+/* ---------- Left brand panel ---------- */
+.brand { background: var(--teal); color: #fff; padding: 48px clamp(24px, 5vw, 64px); display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+.logo { font-family: var(--serif); font-size: 1.6rem; font-weight: 700; letter-spacing: .5px; }
+.logo span { color: var(--amber); margin-left: 4px; font-weight: 400; font-style: italic; }
+.brand h1 { font-family: var(--serif); font-size: clamp(1.8rem, 3.4vw, 2.7rem); line-height: 1.15; max-width: 14ch; }
+.lead { color: #cfe3e8; max-width: 38ch; }
+
+.steps { list-style: none; padding: 0; margin-top: 12px; border-left: 2px solid var(--teal-2); }
+.steps li { position: relative; padding: 6px 0 6px 22px; color: #9fc0c8; }
+.steps li::before { content: ""; position: absolute; left: -7px; top: 13px; width: 12px; height: 12px; border-radius: 50%; background: var(--teal); border: 2px solid var(--teal-2); }
+.steps li.done { color: #fff; }
+.steps li.done::before { background: var(--amber); border-color: var(--amber); }
+.steps li.now { color: #fff; font-weight: 600; }
+.steps li.now::before { border-color: var(--amber); background: var(--teal); }
+
+/* ---------- Form panel ---------- */
+.panel { background: var(--white); padding: 48px clamp(20px, 6vw, 80px); display: flex; flex-direction: column; justify-content: center; max-width: 760px; width: 100%; margin: auto; }
+.panel h2 { font-family: var(--serif); font-size: 1.9rem; color: var(--teal); }
+.sub { color: var(--muted); margin: 4px 0 24px; }
+
+fieldset { border: 0; padding: 0; margin: 0 0 18px; }
+legend { font-weight: 700; color: var(--teal); padding: 0 0 8px; margin-bottom: 10px; border-bottom: 2px solid var(--amber); width: 100%; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+
+.field { margin-bottom: 14px; }
+label, .label { display: block; font-size: .92rem; font-weight: 600; margin-bottom: 5px; }
+input[type=text], input[type=email], input[type=tel], input[type=password], input[type=date], select {
+  width: 100%; padding: 11px 12px; font: inherit; color: var(--ink);
+  border: 1.5px solid var(--line); border-radius: 6px; background: #fff;
+}
+input:focus, select:focus, button:focus-visible, a:focus-visible { outline: 3px solid rgba(242,169,0,.5); outline-offset: 1px; border-color: var(--teal-2); }
+.field.invalid input, .field.invalid select { border-color: var(--danger); }
+.field.valid input, .field.valid select { border-color: var(--ok); }
+.error { display: block; color: var(--danger); font-size: .82rem; min-height: 1.1em; margin-top: 3px; }
+.hint { display: block; color: var(--muted); font-size: .82rem; margin-top: 4px; }
+
+.pw { position: relative; }
+.pw input { padding-right: 64px; }
+.toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: 0; color: var(--teal-2); font-weight: 600; cursor: pointer; padding: 6px 8px; }
+
+.radios { display: flex; gap: 22px; }
+.radios label, .check { display: flex; align-items: center; gap: 8px; font-weight: 400; margin: 0; }
+.row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: 4px 0 20px; font-size: .92rem; }
+.terms { align-items: flex-start; font-size: .9rem; margin-bottom: 4px; }
+.terms input { margin-top: 4px; }
+
+.meter { height: 5px; background: #e3e9ed; border-radius: 3px; margin-top: 7px; overflow: hidden; }
+.meter span { display: block; height: 100%; width: 0; background: var(--danger); transition: width .2s, background .2s; }
+
+a { color: var(--teal-2); font-weight: 600; }
+.btn { width: 100%; margin-top: 12px; padding: 13px; font: inherit; font-weight: 700; color: var(--teal); background: var(--amber); border: 0; border-radius: 6px; cursor: pointer; transition: transform .1s, background .15s; }
+.btn:hover { background: #ffbc1f; }
+.btn:active { transform: translateY(1px); }
+.status { margin-top: 12px; font-weight: 600; min-height: 1.4em; }
+.status.ok { color: var(--ok); }
+.status.bad { color: var(--danger); }
+.switch { margin-top: 22px; text-align: center; color: var(--muted); }
+
+/* ---------- Small screens ---------- */
+@media (max-width: 820px) {
+  .shell { grid-template-columns: 1fr; }
+  .brand { padding: 28px 24px; gap: 12px; }
+  .steps, .lead { display: none; }
+  .brand h1 { max-width: none; font-size: 1.6rem; }
+  .panel { padding: 28px 20px 40px; }
+}
+@media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+.panel[hidden] { display: none; }
+
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <aside class="brand">
+      <p class="logo">MUST<span>Apply</span></p>
+      <h1 id="brandTitle"></h1>
+      <p class="lead" id="brandLead"></p>
+      <ol class="steps" aria-label="Application steps">
+        <li>Create account</li>
+        <li>Sign in</li>
+        <li>Fill in the application</li>
+        <li>Pay and submit</li>
+      </ol>
+    </aside>
+
+    <section class="panel" id="loginView">
+      <h2>Sign in</h2>
+      <p class="sub">Use the email or phone number you registered with.</p>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="username">Email or phone number</label>
+          <input type="text" id="username" name="username" autocomplete="username" placeholder="e.g. jane@gmail.com" required>
+          <small class="error" id="usernameError"></small>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="pw">
+            <input type="password" id="password" name="password" autocomplete="current-password" minlength="8" required>
+            <button type="button" class="toggle" data-target="password" aria-label="Show password">Show</button>
+          </div>
+          <small class="error" id="passwordError"></small>
+        </div>
+
+        <div class="row">
+          <label class="check"><input type="checkbox" name="remember"> Keep me signed in</label>
+          <a href="#">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn">Sign in</button>
+        <p class="status" id="loginStatus" role="status"></p>
+      </form>
+
+      <p class="switch">New applicant? <a href="#register">Create an account</a></p>
+    </section>
+
+    <section class="panel" id="registerView" hidden>
+      <h2>Create account</h2>
+      <p class="sub">It takes about two minutes.</p>
+
+      <form id="registerForm" novalidate>
+        <fieldset>
+          <legend>Personal details</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="surname">Surname</label>
+              <input type="text" id="surname" name="surname" autocomplete="family-name" required>
+              <small class="error"></small>
+            </div>
+            <div class="field">
+              <label for="othernames">Other names</label>
+              <input type="text" id="othernames" name="othernames" autocomplete="given-name" required>
+              <small class="error"></small>
+            </div>
+            <div class="field">
+              <label for="dob">Date of birth</label>
+              <input type="date" id="dob" name="dob" autocomplete="bday" required>
+              <small class="error"></small>
+            </div>
+            <div class="field">
+              <label for="nationality">Nationality</label>
+              <select id="nationality" name="nationality" required>
+                <option value="">Choose country</option>
+                <option>Uganda</option><option>Kenya</option><option>Tanzania</option>
+                <option>Rwanda</option><option>Burundi</option><option>South Sudan</option>
+                <option>DR Congo</option><option>Other</option>
+              </select>
+              <small class="error"></small>
+            </div>
+          </div>
+          <div class="field">
+            <span class="label" id="genderLabel">Gender</span>
+            <div class="radios" role="radiogroup" aria-labelledby="genderLabel">
+              <label><input type="radio" name="gender" value="Female" required> Female</label>
+              <label><input type="radio" name="gender" value="Male"> Male</label>
+            </div>
+            <small class="error"></small>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Contact</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" autocomplete="email" required>
+              <small class="error"></small>
+            </div>
+            <div class="field">
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="+256 7XX XXX XXX" required>
+              <small class="error"></small>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Password</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="regPassword">Password</label>
+              <div class="pw">
+                <input type="password" id="regPassword" name="password" autocomplete="new-password" minlength="8" required>
+                <button type="button" class="toggle" data-target="regPassword" aria-label="Show password">Show</button>
+              </div>
+              <div class="meter" aria-hidden="true"><span id="meterBar"></span></div>
+              <small class="hint" id="meterText">Use 8+ characters with letters and numbers.</small>
+              <small class="error"></small>
+            </div>
+            <div class="field">
+              <label for="confirm">Confirm password</label>
+              <input type="password" id="confirm" name="confirm" autocomplete="new-password" required>
+              <small class="error"></small>
+            </div>
+          </div>
+        </fieldset>
+
+        <label class="check terms"><input type="checkbox" id="terms" name="terms" required> I confirm the details above are true and I accept the application terms.</label>
+        <small class="error" id="termsError"></small>
+
+        <button type="submit" class="btn">Create account</button>
+        <p class="status" id="regStatus" role="status"></p>
+      </form>
+
+      <p class="switch">Already registered? <a href="#login">Sign in</a></p>
+    </section>
+  </main>
+
+  <script>
+// MUST Apply: form validation (runs on both pages)
+(function () {
+  'use strict';
+
+  // ---------- helpers ----------
+  const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  const isPhone = v => /^(\+?256|0)7\d{8}$/.test(v.replace(/[\s-]/g, ''));
+
+  function setError(input, message) {
+    const field = input.closest('.field');
+    const out = field ? field.querySelector('.error') : null;
+    if (field) {
+      field.classList.toggle('invalid', !!message);
+      field.classList.toggle('valid', !message);
+    }
+    if (out) out.textContent = message || '';
+    return !message;
+  }
+
+  function status(el, text, ok) {
+    el.textContent = text;
+    el.className = 'status ' + (ok ? 'ok' : 'bad');
+  }
+
+  // ---------- show / hide password ----------
+  document.querySelectorAll('.toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = document.getElementById(btn.dataset.target);
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      btn.textContent = show ? 'Hide' : 'Show';
+      btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    });
+  });
+
+  // ---------- LOGIN ----------
+  const login = document.getElementById('loginForm');
+  if (login) {
+    const user = document.getElementById('username');
+    const pass = document.getElementById('password');
+    const msg = login.querySelector('.status');
+
+    login.addEventListener('submit', e => {
+      e.preventDefault();
+      const u = user.value.trim();
+      const okUser = setError(user, !u ? 'Enter your email or phone number.'
+        : (isEmail(u) || isPhone(u)) ? '' : 'Enter a valid email or Ugandan phone number.');
+      const okPass = setError(pass, !pass.value ? 'Enter your password.'
+        : pass.value.length < 8 ? 'Password must be at least 8 characters.' : '');
+      if (okUser && okPass) {
+        // Demo only: a real system would send this to a server.
+        status(msg, 'Signed in. Redirecting to your application…', true);
+      } else {
+        status(msg, 'Fix the highlighted fields and try again.', false);
+      }
+    });
+  }
+
+  // ---------- REGISTER ----------
+  const reg = document.getElementById('registerForm');
+  if (reg) {
+    const f = reg.elements;
+    const msg = reg.querySelector('.status');
+    const bar = document.getElementById('meterBar');
+    const meterText = document.getElementById('meterText');
+
+    // Latest allowed birth date: 15 years ago
+    const max = new Date(); max.setFullYear(max.getFullYear() - 15);
+    f.dob.max = max.toISOString().split('T')[0];
+
+    // password strength meter
+    f.password.addEventListener('input', () => {
+      const v = f.password.value;
+      let score = 0;
+      if (v.length >= 8) score++;
+      if (/[a-z]/.test(v) && /[A-Z]/.test(v)) score++;
+      if (/\d/.test(v)) score++;
+      if (/[^A-Za-z0-9]/.test(v)) score++;
+      const levels = [['0%', '#b3261e', 'Use 8+ characters with letters and numbers.'],
+                      ['25%', '#b3261e', 'Weak'], ['50%', '#d98a00', 'Fair'],
+                      ['75%', '#7aa800', 'Good'], ['100%', '#1b7a4b', 'Strong']];
+      bar.style.width = levels[score][0];
+      bar.style.background = levels[score][1];
+      meterText.textContent = v ? levels[score][2] : levels[0][2];
+    });
+
+    const required = (el, label) => setError(el, el.value.trim() ? '' : label + ' is required.');
+
+    reg.addEventListener('submit', e => {
+      e.preventDefault();
+      const results = [
+        required(f.surname, 'Surname'),
+        required(f.othernames, 'Other names'),
+        required(f.dob, 'Date of birth'),
+        required(f.nationality, 'Nationality'),
+        setError(f.email, !f.email.value.trim() ? 'Email is required.' : isEmail(f.email.value.trim()) ? '' : 'Enter a valid email address.'),
+        setError(f.phone, !f.phone.value.trim() ? 'Phone is required.' : isPhone(f.phone.value) ? '' : 'Use a Ugandan number, e.g. +256 703 127171.'),
+        setError(f.password, f.password.value.length < 8 ? 'Password must be at least 8 characters.'
+          : !/\d/.test(f.password.value) || !/[A-Za-z]/.test(f.password.value) ? 'Include both letters and numbers.' : ''),
+        setError(f.confirm, f.confirm.value !== f.password.value ? 'Passwords do not match.' : '')
+      ];
+
+      // gender radio group
+      const genderOk = !!reg.querySelector('input[name=gender]:checked');
+      reg.querySelector('input[name=gender]').closest('.field').querySelector('.error').textContent =
+        genderOk ? '' : 'Choose a gender.';
+      results.push(genderOk);
+
+      // terms checkbox
+      const termsOk = f.terms.checked;
+      document.getElementById('termsError').textContent = termsOk ? '' : 'You must accept the terms to continue.';
+      results.push(termsOk);
+
+      if (results.every(Boolean)) {
+        // Demo only: a real system would send this to a server.
+        status(msg, 'Account created. You can now sign in.', true);
+        setTimeout(() => { location.hash = '#login'; }, 1500);
+      } else {
+        status(msg, 'Fix the highlighted fields and try again.', false);
+      }
+    });
+  }
+
+  // ---------- switch between the two screens ----------
+  const views = {
+    login: { title: 'Your place at MUST starts here.', lead: 'Apply for undergraduate and postgraduate programmes, upload your documents and track your application online.', step: 1, page: 'Sign in' },
+    register: { title: 'Create your applicant account.', lead: 'Use your real names as they appear on your national ID or academic documents. You can edit the rest later.', step: 0, page: 'Create account' }
+  };
+  function route() {
+    const name = location.hash === '#register' ? 'register' : 'login';
+    const v = views[name];
+    document.getElementById('loginView').hidden = name !== 'login';
+    document.getElementById('registerView').hidden = name !== 'register';
+    document.getElementById('brandTitle').textContent = v.title;
+    document.getElementById('brandLead').textContent = v.lead;
+    document.querySelectorAll('.steps li').forEach((li, i) => {
+      li.className = i < v.step ? 'done' : i === v.step ? 'now' : '';
+    });
+    document.title = v.page + ' | MUST Applications';
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', route);
+  route();
+})();
+
+  </script>
+</body>
+</html>
