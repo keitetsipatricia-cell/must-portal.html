@@ -6,57 +6,7 @@
   <title>Online Application Portal | MUST</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-  <style>
-    :root { --indigo:#2f2fb5; --ink:#111827; --muted:#5b6475; --line:#d9dce3; --blue:#1d6fe8; --slate:#64748b; }
-    * { box-sizing:border-box; margin:0; }
-    body {
-      min-height:100vh; display:flex; justify-content:center; padding:20px 12px 40px;
-      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color:var(--ink);
-      background:linear-gradient(180deg,#e0e1ff 0%,#eceefd 45%,#f6f7fd 100%) fixed;
-    }
-    [hidden] { display:none !important; }
-    .wrap { width:100%; max-width:440px; text-align:center; }
-    svg.i { width:20px; height:20px; fill:currentColor; flex:none; }
-
-    /* ---------- Header ---------- */
-    .logo { width:88px; height:88px; margin:0 auto 14px; border-radius:50%; background:#fff; display:grid; place-items:center; overflow:hidden; box-shadow:0 8px 24px rgba(79,70,229,.18); }
-    .logo img, .logo svg { width:78%; height:78%; object-fit:contain; }
-    h1 { font-size:clamp(1.2rem,5.6vw,1.6rem); font-weight:800; line-height:1.2; text-transform:uppercase; letter-spacing:.2px; }
-    .pill { display:inline-block; margin:16px 0 22px; padding:8px 18px; border-radius:999px; background:#d3d6fb; border:1px solid #b5b9f4; color:var(--indigo); font-weight:600; font-size:.95rem; }
-
-    /* ---------- Card ---------- */
-    .card { background:#fff; border-radius:24px; padding:24px 18px 22px; text-align:left; box-shadow:0 10px 30px rgba(60,60,140,.10); }
-    .card h2 { font-size:1.4rem; font-weight:800; }
-    .sub { color:var(--muted); margin:6px 0 20px; font-size:.98rem; }
-    label { display:block; font-weight:700; font-size:1.02rem; margin:0 0 8px; }
-
-    .group { display:flex; border:1px solid var(--line); border-radius:12px; background:#fff; margin-bottom:18px; transition:border-color .15s, box-shadow .15s; }
-    .group:focus-within { border-color:#a5a8f5; box-shadow:0 0 0 4px rgba(129,140,248,.18); }
-    .group .ic { width:46px; display:grid; place-items:center; background:#f8f9fb; color:var(--slate); border-right:1px solid var(--line); border-radius:11px 0 0 11px; }
-    .group input { flex:1; min-width:0; border:0; outline:0; background:transparent; padding:13px 14px; font:inherit; font-size:1.05rem; border-radius:0 12px 12px 0; }
-    .group input::placeholder, .plain::placeholder { color:#9aa3b2; }
-    .eye { border:0; background:none; color:#475569; padding:0 14px; cursor:pointer; }
-    .plain { width:100%; border:1px solid var(--line); border-radius:12px; padding:13px 14px; font:inherit; font-size:1.05rem; margin-bottom:16px; outline:0; }
-    .plain:focus { border-color:#a5a8f5; box-shadow:0 0 0 4px rgba(129,140,248,.18); }
-    .err { color:#b3261e; font-size:.85rem; margin:-12px 0 14px; }
-
-    .sign { width:100%; border:0; border-radius:12px; padding:14px; color:#fff; font:inherit; font-weight:700; font-size:1.1rem; cursor:pointer;
-            display:flex; gap:10px; align-items:center; justify-content:center;
-            background:linear-gradient(135deg,#3b3bc6,#2a2a9c); box-shadow:0 8px 18px rgba(48,48,170,.3); }
-    .sign:active { transform:translateY(1px); }
-    .forgot { display:flex; gap:10px; align-items:center; color:var(--slate); margin:18px 0 12px; text-decoration:none; font-size:1.02rem; }
-    .or { display:flex; align-items:center; gap:10px; color:#94a3b8; font-weight:700; margin:6px 0 14px; justify-content:center; }
-    .or::before, .or::after { content:""; flex:1; height:1px; background:#e2e5ec; }
-    .row { display:flex; gap:12px; }
-    .out { display:flex; gap:8px; align-items:center; justify-content:center; padding:13px 8px; border-radius:12px; background:#fff; font:inherit; font-weight:700; font-size:1rem; text-decoration:none; border:1.5px solid; cursor:pointer; }
-    .out.create { flex:1.55; color:var(--blue); border-color:var(--blue); }
-    .out.how { flex:1; color:#475569; border-color:var(--slate); }
-    .status { margin-top:14px; font-weight:600; font-size:.92rem; }
-    .status.ok { color:#1b7a4b; } .status.bad { color:#b3261e; }
-    .back { display:block; text-align:center; margin-top:18px; color:var(--blue); font-weight:600; text-decoration:none; }
-    ol.steps { padding-left:20px; color:#374151; line-height:1.7; }
-    ol.steps li { margin-bottom:8px; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="wrap">
@@ -165,68 +115,6 @@
 
 </div>
 
-<script>
-// Demo only: nothing here is sent to a server.
-(function () {
-  'use strict';
-  const $ = id => document.getElementById(id);
-  const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-  const isPhone = v => /^(\+?256|0)7\d{8}$/.test(v.replace(/[\s-]/g, ''));
-
-  // show an error under an input (the <p class="err"> right after it or its group)
-  function fail(input, msg, errEl) {
-    const el = errEl || (input.closest('.group') || input).nextElementSibling;
-    el.textContent = msg; el.hidden = !msg;
-    return !msg;
-  }
-  function say(el, text, ok) { el.textContent = text; el.className = 'status ' + (ok ? 'ok' : 'bad'); }
-
-  // ---- screens (#login, #register, #how) ----
-  function route() {
-    const h = location.hash.replace('#', '');
-    const name = h === 'register' || h === 'how' ? h : 'login';
-    $('loginView').hidden = name !== 'login';
-    $('registerView').hidden = name !== 'register';
-    $('howView').hidden = name !== 'how';
-    window.scrollTo(0, 0);
-  }
-  window.addEventListener('hashchange', route);
-  route();
-
-  // ---- eye button ----
-  document.querySelectorAll('[data-eye]').forEach(b => b.addEventListener('click', () => {
-    const i = $(b.dataset.eye);
-    i.type = i.type === 'password' ? 'text' : 'password';
-    b.setAttribute('aria-label', i.type === 'password' ? 'Show password' : 'Hide password');
-  }));
-
-  // ---- login ----
-  $('loginForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const em = $('email'), pw = $('password');
-    const a = fail(em, !em.value.trim() ? 'Enter your email address.' : isEmail(em.value.trim()) ? '' : 'Enter a valid email address.', $('emailErr'));
-    const b = fail(pw, !pw.value ? 'Enter your password.' : '', $('passErr'));
-    if (a && b) say($('loginStatus'), 'Demo only: the form works, but nothing is sent to a server.', true);
-    else say($('loginStatus'), '', true);
-  });
-
-  // ---- create account ----
-  $('registerForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const n = $('rName'), em = $('rEmail'), ph = $('rPhone'), pw = $('rPass'), cf = $('rConfirm');
-    const ok = [
-      fail(n, n.value.trim().split(/\s+/).length < 2 ? 'Enter your surname and other names.' : ''),
-      fail(em, isEmail(em.value.trim()) ? '' : 'Enter a valid email address.'),
-      fail(ph, isPhone(ph.value) ? '' : 'Use a Ugandan number, e.g. +256 703 127171.'),
-      fail(pw, pw.value.length >= 8 && /\d/.test(pw.value) && /[A-Za-z]/.test(pw.value) ? '' : 'Use 8+ characters with letters and numbers.'),
-      fail(cf, cf.value === pw.value && cf.value ? '' : 'Passwords do not match.')
-    ].every(Boolean);
-    if (ok) {
-      say($('regStatus'), 'Account created (demo). Taking you to Sign In…', true);
-      setTimeout(() => { location.hash = '#login'; }, 1400);
-    } else say($('regStatus'), 'Fix the highlighted fields and try again.', false);
-  });
-})();
-</script>
+<script src="script.js"></script>
 </body>
 </html>
